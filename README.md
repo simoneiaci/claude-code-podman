@@ -1,49 +1,22 @@
+# claude-code-podman
 
-🟣 PROCEDURE 2 — CLAUDE CODE (Clean → Setup → Use)
+Run the Anthropic Claude Code CLI inside a Podman container with a persistent
+host-mounted home directory for authentication.
 
-1️⃣ Clean Claude Code environment ONLY
+## Requirements
 
-# Remove container (by name)
-podman rm -f claude-code 2>/dev/null
+- Podman
+- A working Claude Code account
 
-# Remove image
-podman rmi -f claude-code:arm64 2>/dev/null
+## Build the image
 
-# Remove any leftover containers from the image
-podman rm -f $(podman ps -aq --filter ancestor=claude-code) 2>/dev/null
-
-# Remove Claude auth/config on host
-rm -rf \
-  "$HOME/.claude-home" \
-  "$HOME/.claude"
-
-
-⸻
-
-2️⃣ Build Claude Code image
-
-Containerfile (~/claude-code-podman/Containerfile)
-
-FROM node:20-slim
-
-RUN npm install -g @anthropic-ai/claude-code
-
-ENV HOME=/home/claude
-RUN mkdir -p /home/claude && chmod 777 /home/claude
-
-WORKDIR /workspace
-ENTRYPOINT ["claude"]
-
-Build:
-
-cd ~/claude-code-podman
+```bash
 podman build --platform=linux/arm64 -t claude-code:arm64 .
+```
 
+## First-time authentication
 
-⸻
-
-3️⃣ Authenticate Claude Code (first run)
-
+```bash
 mkdir -p "$HOME/.claude-home"
 
 podman run --rm -it \
@@ -54,16 +27,13 @@ podman run --rm -it \
   -v "$HOME/Documents/AI:/workspace" \
   -w /workspace \
   claude-code:arm64
+```
 
-➡️ Follow Claude’s login flow once
-➡️ Auth stored in ~/.claude-home
+Follow the device login flow. Credentials are stored in `~/.claude-home`.
 
-⸻
+## Daily usage
 
-4️⃣ Daily Claude Code usage (CLI only)
-
-Same command as above:
-
+```bash
 podman run --rm -it \
   --name claude-code \
   --user "$(id -u):$(id -g)" \
@@ -72,30 +42,26 @@ podman run --rm -it \
   -v "$HOME/Documents/AI:/workspace" \
   -w /workspace \
   claude-code:arm64
+```
 
+## Verify
 
-⸻
-
-5️⃣ Verify
-
+```bash
 claude whoami
+```
 
+## Clean up (optional)
 
-⸻
+```bash
+podman rm -f claude-code 2>/dev/null
+podman rmi -f claude-code:arm64 2>/dev/null
+podman rm -f $(podman ps -aq --filter ancestor=claude-code) 2>/dev/null
 
-🧠 Key Principles (same for both)
-	•	Explicit HOME → predictable auth
-	•	Bind-mounted HOME → persistence
-	•	--user $(id -u) → no macOS permission issues
-	•	Device auth for Codex → avoids broken localhost OAuth
-	•	Named containers → easy lifecycle control
+rm -rf \
+  "$HOME/.claude-home" \
+  "$HOME/.claude"
+```
 
-⸻
+## License
 
-If you want next:
-	•	shared base image
-	•	podman-compose
-	•	SSH/Git signing
-	•	VS Code Dev Containers
-
-You’re now on a rock-solid setup 💪
+MIT. See `LICENSE`.
