@@ -2,10 +2,24 @@
 
 Thanks for your interest in improving this project.
 
+This project follows the Contributor Covenant Code of Conduct.
+
 ## What to Expect
 
 - Be respectful and constructive.
 - Keep changes focused and easy to review.
+
+## Ways to Contribute
+
+- Report bugs or request features via GitHub issues.
+- Improve documentation or examples.
+- Submit pull requests for fixes or enhancements.
+
+## Before You Submit
+
+- Check existing issues and pull requests to avoid duplication.
+- Keep commits scoped to a single change.
+- Update documentation when behavior or usage changes.
 
 ## Development
 
@@ -32,5 +46,5 @@ podman run --rm -it \
 ## Pull Requests
 
 - Describe the problem and your approach.
-- Update documentation when behavior changes.
+- Call out any manual test steps you ran.
 - Keep formatting consistent with existing files.
